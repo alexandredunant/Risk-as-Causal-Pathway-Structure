@@ -1,0 +1,163 @@
+{
+  "glass": {
+    "species": "glass",
+    "total_states": 8,
+    "total_transitions": 12,
+    "by_layer": {
+      "0": {
+        "num_states": 1,
+        "num_surviving": 1,
+        "num_dead": 0,
+        "survival_rate": 1.0,
+        "avg_edges": 3.0,
+        "max_edges": 3,
+        "min_edges": 3,
+        "std_edges": 0.0,
+        "avg_nodes": 3.0,
+        "max_nodes": 3
+      },
+      "1": {
+        "num_states": 3,
+        "num_surviving": 3,
+        "num_dead": 0,
+        "survival_rate": 1.0,
+        "avg_edges": 2.0,
+        "max_edges": 2,
+        "min_edges": 2,
+        "std_edges": 0.0,
+        "avg_nodes": 3.0,
+        "max_nodes": 3
+      },
+      "2": {
+        "num_states": 3,
+        "num_surviving": 3,
+        "num_dead": 0,
+        "survival_rate": 1.0,
+        "avg_edges": 1.0,
+        "max_edges": 1,
+        "min_edges": 1,
+        "std_edges": 0.0,
+        "avg_nodes": 2.0,
+        "max_nodes": 2
+      },
+      "3": {
+        "num_states": 1,
+        "num_surviving": 0,
+        "num_dead": 1,
+        "survival_rate": 0.0,
+        "avg_edges": 0.0,
+        "max_edges": 0,
+        "min_edges": 0,
+        "std_edges": 0.0,
+        "avg_nodes": 0.0,
+        "max_nodes": 0
+      }
+    },
+    "aggregate": {
+      "mean_connectivity": 1.5,
+      "connectivity_decay_rate": 1.0,
+      "mean_survival_rate": 0.75,
+      "final_survival_rate": 0.0,
+      "state_space_growth": 1
+    }
+  },
+  "plant": {
+    "species": "plant",
+    "total_states": 18,
+    "total_transitions": 41,
+    "by_layer": {
+      "0": {
+        "num_states": 1,
+        "num_surviving": 1,
+        "num_dead": 0,
+        "survival_rate": 1.0,
+        "avg_edges": 3.0,
+        "max_edges": 3,
+        "min_edges": 3,
+        "std_edges": 0.0,
+        "avg_nodes": 3.0,
+        "max_nodes": 3
+      },
+      "1": {
+        "num_states": 3,
+        "num_surviving": 3,
+        "num_dead": 0,
+        "survival_rate": 1.0,
+        "avg_edges": 2.0,
+        "max_edges": 2,
+        "min_edges": 2,
+        "std_edges": 0.0,
+        "avg_nodes": 3.0,
+        "max_nodes": 3
+      },
+      "2": {
+        "num_states": 5,
+        "num_surviving": 5,
+        "num_dead": 0,
+        "survival_rate": 1.0,
+        "avg_edges": 1.8,
+        "max_edges": 3,
+        "min_edges": 1,
+        "std_edges": 0.9797958971132713,
+        "avg_nodes": 2.4,
+        "max_nodes": 3
+      },
+      "3": {
+        "num_states": 5,
+        "num_surviving": 4,
+        "num_dead": 1,
+        "survival_rate": 0.8,
+        "avg_edges": 1.6,
+        "max_edges": 2,
+        "min_edges": 0,
+        "std_edges": 0.8000000000000002,
+        "avg_nodes": 2.4,
+        "max_nodes": 3
+      },
+      "4": {
+        "num_states": 3,
+        "num_surviving": 3,
+        "num_dead": 0,
+        "survival_rate": 1.0,
+        "avg_edges": 1.6666666666666667,
+        "max_edges": 3,
+        "min_edges": 1,
+        "std_edges": 0.9428090415820634,
+        "avg_nodes": 2.3333333333333335,
+        "max_nodes": 3
+      },
+      "5": {
+        "num_states": 1,
+        "num_surviving": 1,
+        "num_dead": 0,
+        "survival_rate": 1.0,
+        "avg_edges": 2.0,
+        "max_edges": 2,
+        "min_edges": 2,
+        "std_edges": 0.0,
+        "avg_nodes": 3.0,
+        "max_nodes": 3
+      }
+    },
+    "aggregate": {
+      "mean_connectivity": 2.011111111111111,
+      "connectivity_decay_rate": 0.2,
+      "mean_survival_rate": 0.9666666666666667,
+      "final_survival_rate": 1.0,
+      "state_space_growth": 1
+    }
+  },
+  "comparison": {
+    "resilience_advantage": {
+      "plant_vs_glass_survival": 1.0,
+      "plant_vs_glass_connectivity": 0.5111111111111111,
+      "plant_vs_glass_state_space": 0
+    },
+    "fragility_indicators": {
+      "glass_decay_rate": 1.0,
+      "plant_decay_rate": 0.2,
+      "glass_final_survival": 0.0,
+      "plant_final_survival": 1.0
+    }
+  }
+}
