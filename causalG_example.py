@@ -328,7 +328,7 @@ def create_evolution_gif(MWG, species_name, output_path, max_layers=None):
             frames.append(frames[-1])
 
         # Create GIF (3s per frame = 10x slower, infinite loop)
-        imageio.mimsave(output_path, frames, duration=3.0, loop=0)
+        imageio.mimsave(output_path, frames, duration=20.0, loop=0)
         print(f"  Saved to {output_path}")
 
     finally:
@@ -444,7 +444,7 @@ def create_comparison_gif(mwg_glass, mwg_plant, output_path, max_layers=None):
             frames.append(frames[-1])
 
         # Create GIF (1.5s per frame = 5x slower)
-        imageio.mimsave(output_path, frames, duration=10.0, loop=0)
+        imageio.mimsave(output_path, frames, duration=20.0, loop=0)
         print(f"  Saved to {output_path}")
 
     finally:
