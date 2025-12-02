@@ -99,36 +99,19 @@ Risk emerges because optimizing for one term often drives the system toward the 
 
 In defining the evolution of these configurations, we must distinguish between two related topological structures, following the formalism of the Wolfram Physics Project \cite{wolfram2020class}.
 
-\begin{definition}[Multiway Evolution vs. Causal Graph]
-The \textbf{Multiway Evolution Graph} consists of nodes representing complete system configurations (states) and edges representing possible updates (transitions). However, the deeper structure is the \textbf{Multiway Causal Graph}, where nodes are \textit{updating events} and edges represent \textit{causal dependencies} between those events.
-\end{definition}
-
-In the risk context, the Multiway Evolution Graph maps the "space of possible futures"—showing which system states can transition to which others. The Multiway Causal Graph maps the "structure of necessity"—showing which prior decisions or failures are necessary prerequisites for a future event to occur.
-
-For example, in a water distribution network:
-\begin{itemize}
-    \item The \textit{Evolution Graph} shows State A (old pipes) transitioning to State B (renewed pipes).
-    \item The \textit{Causal Graph} shows that the event "Renew Pipes" causally depends on the event "Approve Budget," which causally depends on "Detect Leak."
-\end{itemize}
-
-The multiway causal graph makes visible what traditional risk analysis misses: the causal density and light-cone structure of events. A "risky" future is not just one with low utility, but one reachable through a causal graph with high fan-in (inevitable) or low causal depth (imminent).
+In the risk context, the Multiway Evolution Graph maps the "space of possible futures"—showing which system states can transition to which others based on intial discrete rules and their associated actional functional value. The Multiway Causal Graph maps which prior decisions or failures are necessary prerequisites for a future event to occur.
 
 \subsection{The Generative Grammar of Risk: Geometry over State}
 
 A crucial distinction in this framework is that \textbf{risk is not a property of a state (node), but a property of the graph's global topology}. 
 
-In classical risk, we assign a risk value to a specific outcome (e.g., "Probability of Flood = 1\%"). In the multiway causal framework, risk is the \textit{shape} of the possibility space itself. It is a holistic geometric feature, not a local variable. 
-
-\begin{itemize}
-    \item \textbf{Fragility as a Funnel:} If the causal graph exhibits a "funnel" shape—where millions of diverse pasts converge onto a single unavoidable future configuration—that system is fragile, regardless of how "safe" that future state appears. The lack of optionality is the risk.
-    \item \textbf{Robustness as Geodesic Bundling:} If the graph shows a "bundle" of parallel, non-intersecting causal paths that reach similar functional outcomes via different causal histories, the system possesses genuine degeneracy and robustness.
-\end{itemize}
+In classical risk, we assign a risk value to a specific outcome (e.g., "Probability of Flood = 1\%"). In the multiway causal framework, risk is the \textit{shape} of the possibility space itself constrained by the action functional. It is a holistic geometric feature, not a local variable. 
 
 This geometry emerges bottom-up from the iterative application of simple local rules (a "generative grammar" \cite{wolfram2002}), rather than being imposed top-down. We do not model the "risk of failure"; we model the rules of interaction. The risk is the resulting abstract shape—the "shadow" cast by the system's causal evolution.
 
 \subsection{Trajectories as Graph Paths}
 
-There is a precise correspondence between trajectories in the abstract action formulation and paths through the multiway graph. Each path through the graph, starting from the present configuration and extending forward in time through branching decisions and events, represents one complete trajectory with its associated action score computed by summing edge costs along the path.
+There is a precise correspondence between trajectories in the abstract action formulation and paths through the multiway graph. Each path through the graph, starting from the present configuration and extending forward in time through branching decisions and events, represents one complete trajectory with its associated action score computed by summing edge costs (i.e. action fucntional values) along the path.
 
 This representation provides several advantages for risk assessment. It makes path dependence explicit through graph connectivity. Once a system passes through a particular configuration, only edges emanating from that node remain accessible. Prior decisions have closed off other branches. It enables efficient computation through dynamic programming algorithms that exploit graph structure rather than enumerating all possible trajectories. It offers visual interpretability where stakeholders can literally see branching points where decisions matter most and bottlenecks where vulnerability concentrates.
 
@@ -153,6 +136,20 @@ N_{\text{eff}} = e^H
 This number represents how many equally probable paths would generate the observed entropy. A system with $N_{\text{eff}} = 1$ is locked onto a single trajectory. A system with $N_{\text{eff}} = 100$ behaves as if it has one hundred equiprobable futures. This metric is model-free and interpretable regardless of the underlying concentration mechanism.
 
 However, effective path count alone provides an incomplete picture. Two systems might both show $N_{\text{eff}} = 100$, suggesting equivalent robustness, yet differ fundamentally in the nature of their pathway diversity.
+
+\section{A Practical Example }
+
+In this example, the multiway causal graph is constructed using the unified three-state alphabet ${I, D, E}$, representing the states \emph{Intact}, \emph{Damaged}, and \emph{End}. Two illustrative systems are considered---a \textbf{Glass} system and a \textbf{Plant} system. Both operate on the same state space but differ in their transition rules, enabling a consistent comparison between fragility and resilience.
+
+Starting from the initial state $I$, each applicable rule generates a new branch. The resulting multiway system represents all possible evolutions of the state up to a chosen depth. Nodes in the multiway graph correspond to states, and directed edges correspond to discrete events arising from rule applications.
+
+Each event $e$ is associated with a decision-theoretic action functional: \begin{equation} j(e) = \mathrm{Effort}(e) - \mathrm{Utility}(e) + \mathrm{Constraints}(e). \end{equation} For any trajectory $\gamma = (e_1, e_2, \dots, e_n)$, the accumulated cost is \begin{equation} J[\gamma] = \sum_{t=1}^n j(e_t). \end{equation} This provides a quantitative means to compare evolutionary histories produced by different systems.
+
+\paragraph{Glass.} The Glass rule-set emphasizes fragility: transitions tend to push the system toward the terminal state $E$. Several transitions accumulate additional constraint penalties, causing steeper increases in $J[\gamma]$.
+
+\paragraph{Plant.} The Plant rule-set includes healing transitions $D \to I$, enabling partial recovery. This introduces richer branching dynamics and admits trajectories with lower cumulative cost.
+
+The revised implementation produces: \begin{itemize} \item multiway state graphs, \item causal graphs capturing event dependencies, \item JSON files listing all events and trajectories, \item histograms of accumulated $J$ values. \end{itemize} These outputs supersede the earlier example and accurately reflect the rule sets, causal semantics, and action functional used in the study.
 
 \subsection{Redundancy versus Degeneracy}
 
