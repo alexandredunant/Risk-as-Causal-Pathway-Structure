@@ -1,0 +1,242 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------------------------------------------------------
+% PACKAGES
+% ---------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{xcolor}
+
+\geometry{margin=1in}
+
+% ---------------------------------------------------------
+% TITLE
+% ---------------------------------------------------------
+\title{A Rule-Based Multiway Framework for Risk, Fragility, and Resilience:\\
+Utility--Effort--Constraints in Unweighted Graph Dynamics}
+
+\author{Your Name}
+\date{\today}
+
+% ---------------------------------------------------------
+% DOCUMENT
+% ---------------------------------------------------------
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We introduce a discrete multiway framework for analysing fragility and resilience in systems represented as unweighted graphs. 
+Instead of relying on a continuous action functional to select or optimise trajectories, we define microscopic generative rules that modify graph topology according to changes in three fundamental dimensions: \textbf{Utility}, \textbf{Effort}, and \textbf{Constraints}. 
+All possible transformations are retained, producing a multiway causal graph that captures the full space of reachable future configurations.
+The classical action functional emerges as a macroscopic summary of rule applications, not as a selector of optimal paths.
+Using two contrasting systems---a \emph{glass} species (pure degradation) and a \emph{plant} species (degradation + repair)---we demonstrate how resilience emerges from rule diversity and manifests in the topology of the multiway state space.
+\end{abstract}
+
+% =========================================================
+% SECTION 1 — INTRODUCTION
+% =========================================================
+\section{Introduction}
+
+Many natural and socio-technical systems evolve through discrete structural transformations: they lose, gain, or reorganise connections.
+Such systems can be naturally represented as unweighted, undirected graphs whose dynamics are defined not by continuous flows but by structural transitions.
+Traditional approaches rely on energy landscapes or action functionals to select optimal or probable trajectories.
+However, many systems do not follow optimal paths; they simply evolve according to local rules.
+
+In this work we propose a \textbf{rule-based multiway framework}:
+\begin{enumerate}
+    \item System states are unweighted graphs.
+    \item Microscopic rules encode changes in Utility, Effort, and Constraints.
+    \item All rule-generated futures are retained in a multiway causal graph.
+    \item Risk emerges from the global topology of this multiway graph.
+\end{enumerate}
+
+This perspective treats the action functional not as an optimisation principle but as an emergent macroscopic observable summarising the cumulative effects of rule sequences.
+
+% =========================================================
+% SECTION 2 — STATES AS UNWEIGHTED GRAPHS
+% =========================================================
+\section{States as Unweighted Graph Configurations}
+
+A \emph{state} is defined as an unweighted, undirected graph
+\[
+S = (V,E),
+\]
+where $V$ is the fixed set of nodes and $E \subseteq V \times V$ is the set of edges.
+Edges have no weights, costs, or capacities.
+Thus, all information is encoded in the presence or absence of edges, making the system purely topological.
+
+% =========================================================
+% SECTION 3 — RULE-BASED DYNAMICS
+% =========================================================
+\section{Rule-Based Dynamics: Utility, Effort, Constraints}
+
+We define rules not as abstract transformations but as operations characterised by changes in:
+\[
+(\Delta U, \Delta E, \Delta C) \in \{\uparrow, \downarrow, \rightarrow\}^3,
+\]
+representing changes in \textbf{Utility}, \textbf{Effort}, and \textbf{Constraints}.
+
+Each rule acts on the topology of $E$, producing one or more future states.
+
+% ---------------------------------------------------------
+% RULE TABLE (UEC)
+% ---------------------------------------------------------
+\begin{table*}[t]
+\centering
+\begin{tabular}{p{3cm} p{4cm} p{1.3cm} p{1.3cm} p{1.6cm} p{4cm}}
+\toprule
+\textbf{Rule Type} & \textbf{Topological Operation} &
+\textbf{Utility} & \textbf{Effort} & \textbf{Constraints} &
+\textbf{Interpretation} \\
+\midrule
+
+Entropy / Stress (edge deletion) &
+Remove edge $(a,b)$ &
+$\downarrow$ & $\downarrow$ & $\uparrow$ &
+Loss of functionality; less effort; more constrained behaviour \\
+
+Local Repair / Adaptation (triangle closure) &
+If $(a,b)$ and $(b,c)$ exist, add $(a,c)$ &
+$\uparrow$ & $\uparrow$ & $\downarrow$ &
+Creates redundancy; increases utility and cost; relaxes structural constraints \\
+
+Node Expansion &
+Add node $n$ and edges $(n,i)$ &
+$\uparrow$ & $\uparrow$ & $\downarrow$ &
+Growth event; increases capabilities; higher effort; greater flexibility \\
+
+Node Pruning &
+Remove node $n$ and all adjacent edges &
+$\downarrow$ & $\downarrow$ & $\uparrow$ &
+Simplification; reduces effort and utility; imposes constraints \\
+
+Rewiring (neutral) &
+Replace $(a,b)$ with $(a,c)$ &
+$\rightarrow$ & $\rightarrow$ & $\rightarrow$ &
+Neutral reorganization without functional change \\
+
+Pattern Reinforcement (motif completion) &
+Add missing edge in structural motif &
+$\uparrow$ & $\uparrow$ & $\downarrow$ &
+Strengthens patterns; adds robustness at increased effort \\
+
+Constraint Suppression &
+Remove edges incident to node $n$ &
+$\downarrow$ & $\downarrow$ & $\downarrow$ &
+Simplifies structure; reduces constraints and capabilities \\
+
+\bottomrule
+\end{tabular}
+\caption{Rule types expressed through changes in Utility (U), Effort (E), and Constraints (C). Arrows: $\uparrow$ increase, $\downarrow$ decrease, $\rightarrow$ no change.
+All rules act on unweighted graph topology.}
+\label{tab:UEC_rules}
+\end{table*}
+
+% =========================================================
+% SECTION 4 — ACTION AS AN EMERGENT QUANTITY
+% =========================================================
+\section{The Action Functional as an Emergent Observable}
+
+We do not define an external action $A[S]$ that selects or optimises trajectories.  
+Instead:
+\begin{itemize}
+    \item Rules generate all admissible futures.
+    \item No trajectory is favoured during construction.
+    \item The multiway graph captures the complete state space.
+\end{itemize}
+
+The action of a trajectory is a macroscopic summary of the sequence of UEC changes.
+For example, one could define:
+\[
+A(\gamma) = N_{\downarrow U} + N_{\uparrow E} + N_{\uparrow C},
+\]
+but this is not used to select trajectories.
+Action emerges as a descriptive statistic of rule applications, not a prescriptive law.
+
+% =========================================================
+% SECTION 5 — MULTIWAY CAUSAL GRAPH
+% =========================================================
+\section{Multiway Causal Graph}
+
+Starting from an initial state $S_0$, we apply all rules in parallel.
+This produces a second layer of states, which in turn produce a third, and so on.
+
+The resulting structure is a directed acyclic graph:
+\[
+\mathcal{G}_{MW} = (\mathcal{M}, \mathcal{E}),
+\]
+where nodes are reachable states and edges represent rule applications.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{multiway_futures_comparison.png}
+    \caption{Comparison of multiway futures for a \textbf{glass} system (entropy only) and a \textbf{plant} system (entropy + repair). The plant produces a larger, more resilient state space.}
+    \label{fig:comparison}
+\end{figure}
+
+Key topological features include:
+\begin{itemize}
+    \item \textbf{collapse funnels} (fragility),
+    \item \textbf{branching diversity} (resilience),
+    \item \textbf{recombination cycles} (adaptation).
+\end{itemize}
+
+% =========================================================
+% SECTION 6 — EXAMPLE: GLASS VS PLANT
+% =========================================================
+\section{Example: Glass vs. Plant Systems}
+
+We consider two contrasting rule sets:
+\begin{enumerate}
+    \item \textbf{Glass}: entropy only (edge deletion).  
+    \item \textbf{Plant}: entropy + local repair (triangle closure).
+\end{enumerate}
+
+Both begin from a 3-node ring.
+After 10 steps:
+\begin{itemize}
+    \item the glass system collapses to the empty graph,
+    \item the plant system generates a much larger multiway graph,
+    \item the plant retains nonzero connected configurations,
+    \item branching and recombination are significantly higher.
+\end{itemize}
+
+These differences arise solely from rule diversity.
+
+% =========================================================
+% SECTION 7 — DISCUSSION
+% =========================================================
+\section{Discussion}
+
+This framework shows that:
+\begin{itemize}
+    \item Resilience is not an intrinsic property; it is generated by rule diversity.
+    \item Fragile systems correspond to rule sets with $\downarrow U$ and $\uparrow C$ tendencies.
+    \item Resilient systems include rules that increase utility and relax constraints.
+    \item The action functional becomes an emergent, macroscopic summary of rule sequences.
+\end{itemize}
+
+Multiway topology, not energy minimisation, determines the possible futures.
+
+% =========================================================
+% SECTION 8 — CONCLUSION
+% =========================================================
+\section{Conclusion}
+
+We presented a discrete framework for modelling system fragility and resilience using unweighted graph dynamics.
+Rules characterised by changes in Utility, Effort, and Constraints generate all futures in a multiway causal graph.
+Resilience emerges from rule diversity, expressed through increased utility, relaxed constraints, and balanced effort.
+This provides a generalisable, interpretable foundation for studying risk in complex systems.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
