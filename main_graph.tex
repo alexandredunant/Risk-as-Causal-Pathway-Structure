@@ -19,7 +19,7 @@
 \newtheorem{definition}{Definition}
 \newtheorem{proposition}{Proposition}
 
-\title{Risk as Causal Pathway Structure:\\A Rule-Based Multiway Framework}
+\title{Risk as Causal Pathway Structure}
 
 \author{Author Names\\Institution}
 \date{}
@@ -96,7 +96,7 @@ This functional serves as a macroscopic summary statistic. Trajectories characte
 
 Starting from an initial configuration $\Sigma_0$, the recursive application of the rule set generates a Multiway Causal Graph $\mathcal{G}_{MW}$. This directed acyclic graph maps the entire space of accessible futures. Nodes represent complete system configurations, while edges represent specific rule applications.
 
-\section{Quantifying Topological Risk}
+\subsection{Quantifying Topological Risk}
 
 Once the multiway graph is constructed, we can evaluate risk not by summing static probabilities, but by analyzing the graph's topology. We propose three primary metrics for this purpose.
 
@@ -136,17 +136,17 @@ The divergence in the resulting multiway graphs illustrates two fundamentally di
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{multiway_futures_comparison.png}
-    \caption{\textbf{Topological Divergence of Risk Landscapes.} Comparative evolution of the Glass (left) and Plant (right) multiway causal graphs. The Glass system exhibits a collapsing topology where all paths converge to a single failure state. The Plant system exhibits a rich, recombining topology with high degeneracy, maintaining multiple viable configurations despite identical initial hazard and exposure.}
+    \caption{Comparative evolution of the Glass (left) and Plant (right) multiway causal graphs. The Glass system exhibits a collapsing topology where all paths converge to a single failure state. The Plant system exhibits a rich, recombining topology with high degeneracy, maintaining multiple viable configurations despite identical initial hazard and exposure.}
     \label{fig:comparison}
 \end{figure}
 
-
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{topological_risk_table.png}
-    \caption{\textbf{Topological Divergence of Risk Landscapes.} Comparative evolution of the Glass (left) and Plant (right) multiway causal graphs. The Glass system exhibits a collapsing topology where all paths converge to a single failure state. The Plant system exhibits a rich, recombining topology with high degeneracy, maintaining multiple viable configurations despite identical initial hazard and exposure.}
+    \includegraphics[width=0.8\textwidth]{topological_risk_table.png}
+    \caption{Quantification of the topological analysis of the two systems "Glass" and "Plant".}
     \label{fig:metrics}
 \end{figure}
+
 
 The degradation-dominant regime ("Glass") exhibits a partial mesh topology. The phase space contracts as options are irreversibly pruned. Trajectories bundle together, inevitably converging on a single, disconnected attractor state. The emergent action functional $J[\gamma]$ increases monotonically, reflecting the unchecked accumulation of constraints.
 
