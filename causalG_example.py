@@ -239,12 +239,15 @@ def get_layout(G):
             # Final fallback if no graphviz tools are installed
             return nx.spring_layout(G, seed=42)
 
-def create_evolution_gif(MWG, species_name, output_path, max_layers=None):
+def save_evolution_frames(MWG, species_name, frames_dir, max_layers=None):
     """
-    Create an animated GIF showing the temporal evolution of the multiway graph.
-    Each frame shows the graph up to a specific layer/timestep.
+    Save individual frame images for each timestep of the multiway graph evolution.
+    Returns the list of frame file paths.
     """
-    print(f"Creating evolution GIF for {species_name}...")
+    print(f"Creating evolution frames for {species_name}...")
+
+    # Create frames directory if it doesn't exist
+    os.makedirs(frames_dir, exist_ok=True)
 
     # Group nodes by layer
     layers = defaultdict(list)
@@ -253,93 +256,111 @@ def create_evolution_gif(MWG, species_name, output_path, max_layers=None):
         layers[layer].append(node)
 
     if max_layers is None:
-        max_layers = max(layers.keys())
+        max_layers = max(layers.keys()) if layers else 0
 
-    # Create temp directory for frames
-    temp_dir = tempfile.mkdtemp()
-    frames = []
+    frame_paths = []
 
     # Compute layout for full graph (so nodes don't move between frames)
     full_pos = get_layout(MWG)
 
-    try:
-        for current_layer in range(max_layers + 1):
-            # Build subgraph up to current layer
-            nodes_up_to_layer = []
-            for layer in range(current_layer + 1):
-                nodes_up_to_layer.extend(layers[layer])
+    for current_layer in range(max_layers + 1):
+        # Build subgraph up to current layer
+        nodes_up_to_layer = []
+        for layer in range(current_layer + 1):
+            nodes_up_to_layer.extend(layers[layer])
 
-            subgraph = MWG.subgraph(nodes_up_to_layer).copy()
+        subgraph = MWG.subgraph(nodes_up_to_layer).copy()
 
-            if subgraph.number_of_nodes() == 0:
-                continue
+        if subgraph.number_of_nodes() == 0:
+            continue
 
-            # Create figure
-            fig, ax = plt.subplots(figsize=(10, 8))
+        # Create figure
+        fig, ax = plt.subplots(figsize=(10, 8))
 
-            # Use positions from full graph for consistency
-            pos = {n: full_pos[n] for n in subgraph.nodes() if n in full_pos}
+        # Use positions from full graph for consistency
+        pos = {n: full_pos[n] for n in subgraph.nodes() if n in full_pos}
 
-            # Color nodes by their layer
-            node_colors = [MWG.nodes[n].get('layer', 0) for n in subgraph.nodes()]
+        # Color nodes by their layer
+        node_colors = [MWG.nodes[n].get('layer', 0) for n in subgraph.nodes()]
 
-            # Draw the graph
-            nx.draw(subgraph, pos,
-                   node_size=80,
-                   node_color=node_colors,
-                   cmap='viridis',
-                   vmin=0,
-                   vmax=max_layers,
-                   alpha=0.8,
-                   edge_color="gray",
-                   arrowsize=10,
-                   width=0.5,
-                   with_labels=False,
-                   ax=ax)
+        # Draw the graph
+        nx.draw(subgraph, pos,
+               node_size=80,
+               node_color=node_colors,
+               cmap='viridis',
+               vmin=0,
+               vmax=max_layers,
+               alpha=0.8,
+               edge_color="gray",
+               arrowsize=10,
+               width=0.5,
+               with_labels=False,
+               ax=ax)
 
-            # Add colorbar
-            sm = plt.cm.ScalarMappable(cmap='viridis',
-                                      norm=plt.Normalize(vmin=0, vmax=max_layers))
-            sm.set_array([])
-            cbar = plt.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
-            cbar.set_label('Layer/Timestep', rotation=270, labelpad=15)
+        # Add colorbar
+        sm = plt.cm.ScalarMappable(cmap='viridis',
+                                  norm=plt.Normalize(vmin=0, vmax=max_layers))
+        sm.set_array([])
+        cbar = plt.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
+        cbar.set_label('Layer/Timestep', rotation=270, labelpad=15)
 
-            # Title with stats
-            num_alive = sum(1 for n in subgraph.nodes() if len(n) > 0)
-            num_dead = sum(1 for n in subgraph.nodes() if len(n) == 0)
+        # Title with stats
+        num_alive = sum(1 for n in subgraph.nodes() if len(n) > 0)
+        num_dead = sum(1 for n in subgraph.nodes() if len(n) == 0)
 
-            ax.set_title(f"{species_name.capitalize()} Multiway Evolution\n"
-                        f"Layer {current_layer}/{max_layers} | "
-                        f"States: {subgraph.number_of_nodes()} | "
-                        f"Alive: {num_alive} | Dead: {num_dead}",
-                        fontsize=14, fontweight='bold')
+        ax.set_title(f"{species_name.capitalize()} Multiway Evolution\n"
+                    f"Layer {current_layer}/{max_layers} | "
+                    f"States: {subgraph.number_of_nodes()} | "
+                    f"Alive: {num_alive} | Dead: {num_dead}",
+                    fontsize=14, fontweight='bold')
 
-            plt.tight_layout()
+        plt.tight_layout()
 
-            # Save frame
-            frame_path = os.path.join(temp_dir, f"frame_{current_layer:04d}.png")
-            plt.savefig(frame_path, dpi=100, bbox_inches='tight')
-            plt.close()
+        # Save frame
+        frame_path = os.path.join(frames_dir, f"{species_name}_frame_{current_layer:04d}.png")
+        plt.savefig(frame_path, dpi=100, bbox_inches='tight')
+        plt.close()
 
-            frames.append(imageio.imread(frame_path))
+        frame_paths.append(frame_path)
+        print(f"  Saved frame {current_layer}/{max_layers}")
 
-        # Add extra frames at the end (pause on final state)
+    print(f"  Saved {len(frame_paths)} frames to {frames_dir}")
+    return frame_paths
+
+def create_gif_from_frames(frame_paths, output_path, duration=0.5, loop=0):
+    """
+    Compile a list of frame images into a GIF.
+
+    Parameters:
+    - frame_paths: List of image file paths
+    - output_path: Output GIF file path
+    - duration: Duration of each frame in seconds
+    - loop: Number of loops (0 = infinite)
+    """
+    print(f"Creating GIF from {len(frame_paths)} frames...")
+
+    frames = []
+    for frame_path in frame_paths:
+        frames.append(imageio.imread(frame_path))
+
+    # Add pause frames at the end
+    if frames:
         for _ in range(5):
             frames.append(frames[-1])
 
-        # Create GIF (3s per frame = 10x slower, infinite loop)
-        imageio.mimsave(output_path, frames, duration=20.0, loop=0)
-        print(f"  Saved to {output_path}")
+    # Create GIF
+    imageio.mimsave(output_path, frames, duration=duration, loop=loop)
+    print(f"  GIF saved to {output_path}")
 
-    finally:
-        # Cleanup temp directory
-        shutil.rmtree(temp_dir)
+def save_comparison_frames(mwg_glass, mwg_plant, frames_dir, max_layers=None):
+    """
+    Save side-by-side comparison frames for glass and plant evolution.
+    Returns the list of frame file paths.
+    """
+    print("Creating side-by-side comparison frames...")
 
-def create_comparison_gif(mwg_glass, mwg_plant, output_path, max_layers=None):
-    """
-    Create side-by-side comparison GIF of glass and plant evolution.
-    """
-    print("Creating side-by-side comparison GIF...")
+    # Create frames directory if it doesn't exist
+    os.makedirs(frames_dir, exist_ok=True)
 
     # Group nodes by layer for both graphs
     layers_glass = defaultdict(list)
@@ -354,101 +375,92 @@ def create_comparison_gif(mwg_glass, mwg_plant, output_path, max_layers=None):
         layers_plant[layer].append(node)
 
     if max_layers is None:
-        max_layers = min(max(layers_glass.keys()), max(layers_plant.keys()))
+        max_layers = min(max(layers_glass.keys()) if layers_glass else 0,
+                        max(layers_plant.keys()) if layers_plant else 0)
 
-    # Create temp directory
-    temp_dir = tempfile.mkdtemp()
-    frames = []
+    frame_paths = []
 
     # Compute layouts for full graphs
     full_pos_glass = get_layout(mwg_glass)
     full_pos_plant = get_layout(mwg_plant)
 
-    try:
-        for current_layer in range(max_layers + 1):
-            # Build subgraphs up to current layer
-            nodes_glass = []
-            nodes_plant = []
+    for current_layer in range(max_layers + 1):
+        # Build subgraphs up to current layer
+        nodes_glass = []
+        nodes_plant = []
 
-            for layer in range(current_layer + 1):
-                nodes_glass.extend(layers_glass[layer])
-                nodes_plant.extend(layers_plant[layer])
+        for layer in range(current_layer + 1):
+            nodes_glass.extend(layers_glass[layer])
+            nodes_plant.extend(layers_plant[layer])
 
-            subgraph_glass = mwg_glass.subgraph(nodes_glass).copy()
-            subgraph_plant = mwg_plant.subgraph(nodes_plant).copy()
+        subgraph_glass = mwg_glass.subgraph(nodes_glass).copy()
+        subgraph_plant = mwg_plant.subgraph(nodes_plant).copy()
 
-            # Create figure with two subplots
-            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 7))
+        # Create figure with two subplots
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 7))
 
-            # --- GLASS SUBPLOT ---
-            if subgraph_glass.number_of_nodes() > 0:
-                pos_glass = {n: full_pos_glass[n] for n in subgraph_glass.nodes() if n in full_pos_glass}
-                node_colors_glass = [mwg_glass.nodes[n].get('layer', 0) for n in subgraph_glass.nodes()]
+        # --- GLASS SUBPLOT ---
+        if subgraph_glass.number_of_nodes() > 0:
+            pos_glass = {n: full_pos_glass[n] for n in subgraph_glass.nodes() if n in full_pos_glass}
+            node_colors_glass = [mwg_glass.nodes[n].get('layer', 0) for n in subgraph_glass.nodes()]
 
-                nx.draw(subgraph_glass, pos_glass,
-                       node_size=60,
-                       node_color=SPECIES_DNA["glass"]["color"],
-                       alpha=0.7,
-                       edge_color="gray",
-                       arrowsize=8,
-                       width=0.5,
-                       with_labels=False,
-                       ax=ax1)
+            nx.draw(subgraph_glass, pos_glass,
+                   node_size=60,
+                   node_color=SPECIES_DNA["glass"]["color"],
+                   alpha=0.7,
+                   edge_color="gray",
+                   arrowsize=8,
+                   width=0.5,
+                   with_labels=False,
+                   ax=ax1)
 
-                num_alive_glass = sum(1 for n in subgraph_glass.nodes() if len(n) > 0)
-                num_dead_glass = sum(1 for n in subgraph_glass.nodes() if len(n) == 0)
+            num_alive_glass = sum(1 for n in subgraph_glass.nodes() if len(n) > 0)
+            num_dead_glass = sum(1 for n in subgraph_glass.nodes() if len(n) == 0)
 
-                ax1.set_title(f"Glass (Fragile)\n"
-                            f"States: {subgraph_glass.number_of_nodes()} | "
-                            f"Alive: {num_alive_glass} | Dead: {num_dead_glass}",
-                            fontsize=12, fontweight='bold')
+            ax1.set_title(f"Glass (Fragile)\n"
+                        f"States: {subgraph_glass.number_of_nodes()} | "
+                        f"Alive: {num_alive_glass} | Dead: {num_dead_glass}",
+                        fontsize=12, fontweight='bold')
 
-            # --- PLANT SUBPLOT ---
-            if subgraph_plant.number_of_nodes() > 0:
-                pos_plant = {n: full_pos_plant[n] for n in subgraph_plant.nodes() if n in full_pos_plant}
-                node_colors_plant = [mwg_plant.nodes[n].get('layer', 0) for n in subgraph_plant.nodes()]
+        # --- PLANT SUBPLOT ---
+        if subgraph_plant.number_of_nodes() > 0:
+            pos_plant = {n: full_pos_plant[n] for n in subgraph_plant.nodes() if n in full_pos_plant}
+            node_colors_plant = [mwg_plant.nodes[n].get('layer', 0) for n in subgraph_plant.nodes()]
 
-                nx.draw(subgraph_plant, pos_plant,
-                       node_size=60,
-                       node_color=SPECIES_DNA["plant"]["color"],
-                       alpha=0.7,
-                       edge_color="gray",
-                       arrowsize=8,
-                       width=0.5,
-                       with_labels=False,
-                       ax=ax2)
+            nx.draw(subgraph_plant, pos_plant,
+                   node_size=60,
+                   node_color=SPECIES_DNA["plant"]["color"],
+                   alpha=0.7,
+                   edge_color="gray",
+                   arrowsize=8,
+                   width=0.5,
+                   with_labels=False,
+                   ax=ax2)
 
-                num_alive_plant = sum(1 for n in subgraph_plant.nodes() if len(n) > 0)
-                num_dead_plant = sum(1 for n in subgraph_plant.nodes() if len(n) == 0)
+            num_alive_plant = sum(1 for n in subgraph_plant.nodes() if len(n) > 0)
+            num_dead_plant = sum(1 for n in subgraph_plant.nodes() if len(n) == 0)
 
-                ax2.set_title(f"Plant (Resilient)\n"
-                            f"States: {subgraph_plant.number_of_nodes()} | "
-                            f"Alive: {num_alive_plant} | Dead: {num_dead_plant}",
-                            fontsize=12, fontweight='bold')
+            ax2.set_title(f"Plant (Resilient)\n"
+                        f"States: {subgraph_plant.number_of_nodes()} | "
+                        f"Alive: {num_alive_plant} | Dead: {num_dead_plant}",
+                        fontsize=12, fontweight='bold')
 
-            # Overall title
-            fig.suptitle(f"Multiway Evolution Comparison - Layer {current_layer}/{max_layers}",
-                        fontsize=16, fontweight='bold')
+        # Overall title
+        fig.suptitle(f"Multiway Evolution Comparison - Layer {current_layer}/{max_layers}",
+                    fontsize=16, fontweight='bold')
 
-            plt.tight_layout()
+        plt.tight_layout()
 
-            # Save frame
-            frame_path = os.path.join(temp_dir, f"frame_{current_layer:04d}.png")
-            plt.savefig(frame_path, dpi=120, bbox_inches='tight')
-            plt.close()
+        # Save frame
+        frame_path = os.path.join(frames_dir, f"comparison_frame_{current_layer:04d}.png")
+        plt.savefig(frame_path, dpi=120, bbox_inches='tight')
+        plt.close()
 
-            frames.append(imageio.imread(frame_path))
+        frame_paths.append(frame_path)
+        print(f"  Saved comparison frame {current_layer}/{max_layers}")
 
-        # Add pause frames at the end
-        for _ in range(5):
-            frames.append(frames[-1])
-
-        # Create GIF (1.5s per frame = 5x slower)
-        imageio.mimsave(output_path, frames, duration=20.0, loop=0)
-        print(f"  Saved to {output_path}")
-
-    finally:
-        shutil.rmtree(temp_dir)
+    print(f"  Saved {len(frame_paths)} comparison frames to {frames_dir}")
+    return frame_paths
 
 def plot_metric_comparison(metrics_glass, metrics_plant):
     """
@@ -635,11 +647,20 @@ def plot_futures(steps):
     print("\nGenerating risk metrics visualizations...")
     plot_metric_comparison(metrics_glass, metrics_plant)
 
-    # Create evolution GIFs
-    print("\nGenerating temporal evolution GIFs...")
-    create_evolution_gif(mwg_glass, "glass", "glass_evolution.gif", max_layers=steps)
-    create_evolution_gif(mwg_plant, "plant", "plant_evolution.gif", max_layers=steps)
-    create_comparison_gif(mwg_glass, mwg_plant, "comparison_evolution.gif", max_layers=steps)
+    # Create evolution frames and GIFs
+    print("\nGenerating temporal evolution frames and GIFs...")
+    frames_dir = "evolution_frames"
+    os.makedirs(frames_dir, exist_ok=True)
+
+    # Save individual frames
+    glass_frames = save_evolution_frames(mwg_glass, "glass", frames_dir, max_layers=steps)
+    plant_frames = save_evolution_frames(mwg_plant, "plant", frames_dir, max_layers=steps)
+    comparison_frames = save_comparison_frames(mwg_glass, mwg_plant, frames_dir, max_layers=steps)
+
+    # Compile frames into GIFs (duration=1.5 seconds per frame)
+    create_gif_from_frames(glass_frames, os.path.join(frames_dir, "glass_evolution.gif"), duration=1.5)
+    create_gif_from_frames(plant_frames, os.path.join(frames_dir, "plant_evolution.gif"), duration=1.5)
+    create_gif_from_frames(comparison_frames, os.path.join(frames_dir, "comparison_evolution.gif"), duration=1.5)
 
     print("\n" + "="*60)
     print("RISK ANALYSIS SUMMARY")
