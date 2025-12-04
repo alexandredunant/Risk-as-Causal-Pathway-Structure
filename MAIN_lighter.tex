@@ -127,14 +127,24 @@ In contrast, the Plant system exhibits rich recombination cycles that produce st
 
 Figure 1 visualizes this fundamental topological divergence. The contrasting structures demonstrate that risk is not determined by initial conditions or disturbance intensity alone but emerges from the topology of transformation rules. Systems exposed to identical hazards can exhibit radically different risk profiles depending on their capacity for adaptive reorganization.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{topological_risk_table.png}
-    \caption{Quantitative topological metrics comparing the Glass and Plant regimes. The Glass system shows monotonic decline in pathway count (\(N_{\mathrm{paths}}\)), trivial reconvergence to a single failure state (high \(\rho\) but to a catastrophic endpoint), high topological sensitivity \(S(\theta)\) near collapse, and vanishing spectral gap (\(\lambda_2 \to 0\)) signifying loss of connectivity. The Plant system maintains high pathway diversity, nontrivial reconvergence to functional states, moderate sensitivity, and strong connectivity throughout evolution. These metrics quantify the intuitive distinction between brittle and resilient systems in terms of precise features of the multiway causal graph.}
-    \label{fig:metrics}
-\end{figure}
+\begin{table}[H]
+\centering
+\begin{tabular}{l c c l}
+\hline
+\textbf{Metric} & \textbf{Glass} & \textbf{Plant} & \textbf{Interpretation} \\
+\hline
+Total States (Nodes) & 8 & 12 & Configuration space size \\
+$N_{\mathrm{paths}}$ & 6 & 10 & Pathway multiplicity \\
+$\rho$ (Reconvergence) & 0.500 & 0.667 & Structural degeneracy \\
+$S(\theta)$ (Sensitivity) & 0.028 & 0.015 & Topological transition risk \\
+$\lambda_2$ (Spectral Gap) & 0.6667 & 0.3333 & Algebraic connectivity \\
+\hline
+\end{tabular}
+\caption{Quantitative topological metrics comparing the Glass and Plant regimes computed from the multiway causal graphs at simulation depth of 6 steps. The Glass system shows fewer pathways (6 vs 10), moderate reconvergence indicating some pathway convergence (0.500 vs 0.667), slightly higher topological sensitivity to parameter changes, and higher spectral gap which here reflects the simpler topology of a degrading system. The Plant system maintains higher pathway diversity, more frequent reconvergence to functional states through repair mechanisms, lower sensitivity indicating structural stability, and moderate connectivity. These metrics quantify the distinction between brittle and resilient systems through precise topological features of the multiway causal graph.}
+\label{tab:metrics}
+\end{table}
 
-Figure 2 quantifies these topological differences through the metrics introduced in Section 2.3. The stark contrasts in \(N_{\mathrm{eff}}\), \(I(\theta)\), and \(\lambda_2\) provide objective, quantifiable measures of resilience and fragility that enable rigorous comparison of alternative system designs.
+Table 1 quantifies these topological differences through the metrics introduced in Section 2.3. The contrasts in \(N_{\mathrm{paths}}\), \(\rho\), \(S(\theta)\), and \(\lambda_2\) provide objective, quantifiable measures of resilience and fragility that enable rigorous comparison of alternative system designs.
 
 \subsection{Causal Invariance and Closure}
 
