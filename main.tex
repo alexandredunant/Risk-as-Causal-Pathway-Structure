@@ -170,7 +170,14 @@ The interplay between entropy and repair rules generates rich dynamics. Degradat
 
 \subsection{Comparative Results}
 
-We generated multiway causal graphs for both regimes starting from the same initial triangle configuration and allowing evolution for six temporal steps. This limited horizon was chosen to keep the computational analysis tractable while still capturing the key topological differences between regimes. Table~\ref{tab:metrics} presents quantitative comparisons of the four topological metrics.
+We generated multiway causal graphs for both regimes starting from the same initial triangle configuration and allowing evolution for six temporal steps (Figure \ref{fig:graphs}). This limited horizon was chosen to keep the computational analysis tractable while still capturing the key topological differences between regimes. Table~\ref{tab:metrics} presents quantitative comparisons of the four topological metrics.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{multiway_futures_comparison.png}
+    \caption{Comparative evolution of the Glass (left) and Plant (right) multiway causal graphs over equivalent time horizons. The Glass system exhibits a collapsing topology where all paths converge to a single failure state, showing high early diversity that progressively narrows to a unique terminal configuration. The Plant system exhibits a rich, recombining topology with high degeneracy, maintaining multiple viable configurations through repair cycles that prevent convergence to failure. Despite identical initial hazard and exposure conditions, the difference in transformation rules produces radically different possibility spaces, demonstrating that risk emerges from causal topology rather than from static vulnerability metrics.}
+    \label{fig:graphs}
+\end{figure}
 
 \begin{table}[H]
 \centering
@@ -235,7 +242,7 @@ Compared to dynamic systems modeling and simulation, we emphasize topological an
 
 Several limitations of the current framework deserve acknowledgment. First, the approach is currently demonstrated through synthetic examples rather than calibrated to empirical systems. Translating the framework into practical decision support tools will require methods for eliciting transformation rules from empirical data, stakeholder knowledge, and existing models. This calibration challenge is substantial but not unique to our approach—all scenario-based methods face questions about how to ensure that explored futures are relevant and plausible.
 
-Second, the computational cost of exhaustive multiway graph generation grows rapidly with the number of transformation rules and the time horizon considered. For complex real-world systems, complete enumeration of all possible futures quickly becomes intractable. However, several strategies can manage this complexity. Coarse-graining can group configurations into equivalence classes based on functional similarity rather than structural identity. Pruning can eliminate pathways that lead to configurations of no interest (e.g., complete system failure). Sampling methods can explore representative subsets of the possibility space rather than generating it exhaustively. These computational strategies require further development but appear promising.
+Second, the computational cost of exhaustive multiway graph generation grows rapidly with the number of transformation rules and the time horizon considered. For complex real-world systems, complete enumeration of all possible futures quickly becomes intractable. However, several strategies can manage this complexity. Coarse-graining can group configurations into equivalence classes based on functional similarity rather than structural identity. Sampling methods can explore representative subsets of the possibility space rather than generating it exhaustively. These computational strategies would require further development.
 
 Third, the framework currently treats transformation rules as given and focuses on analyzing their consequences. An important extension would develop methods for designing transformation rules to achieve desired topological properties. For example, what repair mechanisms would maximize reconvergence while minimizing resource costs? What combinations of transformation rules produce possibility spaces that are both diverse and navigable? These inverse design problems represent an important direction for future research.
 
@@ -255,7 +262,7 @@ The Glass-Plant comparison demonstrates that transformation rule topology fundam
 
 The multiway causal graph perspective offers not merely a technical tool but a conceptual lens through which to understand how systems navigate uncertain futures. By representing risk as emerging from the structure of possibilities rather than from static properties, this framework aligns with growing recognition that deep uncertainty demands approaches emphasizing robust adaptation over precise prediction \citep{lempert2003shaping, walker2013deep}. As humanity confronts increasingly complex, interconnected challenges from climate change \citep{lenton2008tipping} to technological disruption to social transformation, frameworks that capture the branching, path-dependent, and fundamentally uncertain nature of systemic evolution become essential for navigating toward desirable futures.
 
-Important next steps include empirical calibration of transformation rules for specific systems, stakeholder engagement to incorporate diverse perspectives and values, computational methods for managing complexity in large-scale applications, and integration with existing decision support tools. Despite current limitations, the framework provides a principled foundation for analyzing systemic risk that addresses fundamental gaps in static assessment approaches while offering practical metrics for robust decision-making under deep uncertainty.
+Important next steps include empirical calibration of transformation rules for specific systems and computational methods for managing complexity in large-scale applications. Despite current limitations, the framework provides a principled foundation for a paradigm shift in risk assessment.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
