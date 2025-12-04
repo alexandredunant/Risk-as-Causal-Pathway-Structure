@@ -145,6 +145,23 @@ The degradation-dominant regime ("Glass") exhibits a partial mesh topology. The 
 
 Conversely, the adaptive regime ("Plant") generates a dense, highly connected graph. The interplay of deletion and creation rules produces recombination cycles—loops in the causal graph where the system can return to or approximate previous states of high utility. This topology exhibits high degeneracy: there are multiple structurally distinct pathways that maintain functional connectivity. This structural independence—functional redundancy without structural identity—is the topological signature of genuine resilience.
 
+\subsection{Causal Invariance and the Topology of Closure}
+
+A critical feature observed in both the Glass and Plant regimes is the phenomenon of \textit{graph closure}---the tendency of divergent pathways to reconverge. In the language of rewriting systems, this property is known as \textit{confluence} or \textit{causal invariance}. It implies that the macroscopic outcome is independent of the microscopic order in which local rules are applied. However, the nature of this closure differs fundamentally between the two regimes, providing a rigorous definition of "collapse" versus "resilience."
+
+In the Glass regime, the system exhibits \textit{trivial closure}. The multiway graph forms a topology where all branching pathways eventually terminate at a unique sink state $\Sigma_{\text{collapse}}$. While causally invariant, this closure represents a loss of state volume; the system "solves" the problem of future uncertainty by eliminating all functional configurations (i.e. the glass will inevitably break and its fucntionality collapse).
+
+In the Plant regime, the system exhibits \textit{nontrivial closure} (or homeostatic convergence). The presence of repair rules creates recombination cycles, allowing distinct trajectories to merge back into shared functional states. For instance, a sequence of "damage $\to$ repair" ($\Sigma \to \Sigma' \to \Sigma$) yields the same final topology as a sequence of "maintenance" ($\Sigma \to \Sigma$). This mesh-like topology allows the system to compress a potentially infinite history into a finite set of equivalence classes, effectively "forgetting" perturbations that were successfully mitigated.
+
+\subsubsection{The Risk of Non-Closure: Path Dependence and Lock-In}
+
+The absence of closure signals a third, distinct risk regime: \textit{radical path dependence}. In a non-closed multiway graph (a purely divergent tree topology), the commutation relation between rules fails:
+\[
+\mathcal{R}_a(\mathcal{R}_b(\Sigma)) \neq \mathcal{R}_b(\mathcal{R}_a(\Sigma))
+\]
+Here, the specific sequence of events permanently constrains the future state space. In risk terms, this topology represents \textit{lock-in} or \textit{hysteresis}, where a momentary failure to apply a mitigation rule ($e.g.$, delayed maintenance) renders future recovery pathways topologically inaccessible. Unlike the Plant regime, where energy expenditures ($\Delta E$) can force divergent paths to reconverge, a non-closed system lacks the requisite transformation rules to reverse entropy. Consequently, the \textit{effective number of paths} $N_{eff}$ grows exponentially with time, rendering the system computationally irreducible and operationally unmanageable.
+
+
 \section{Conclusion}
 
 The rule-based multiway framework establishes a new epistemic foundation for risk science. By defining risk as a property of the causal graph topology rather than a static probability, we can identify latent fragilities that classical methods miss. Specifically, the framework distinguishes between apparent robustness (high path count via redundancy) and genuine resilience (high path count via degeneracy). Future work will focus on developing efficient coarse-graining algorithms to scale this topological analysis to high-dimensional SETS configurations, enabling decision-makers to navigate the complex geometry of the future.
