@@ -87,7 +87,27 @@ Formally, the multiway causal graph \(G = (S, T)\) consists of:
     \item A set \(T\) of transitions, where each transition represents a rule application taking one configuration to another
 \end{itemize}
 
-This construction differs from conventional scenario analysis in two important ways. First, the multiway graph is generated systematically from explicit transformation rules rather than being constructed ad hoc based on expert judgment about plausible futures. This systematic generation ensures logical consistency—all represented futures are reachable through specified mechanisms—while also enabling exploration of unexpected combinations that human judgment might overlook. Second, the multiway graph explicitly represents the \emph{relationships} between scenarios, showing how different pathways branch from common ancestors or converge toward common descendants. This relational structure enables topological analysis of the possibility space.
+This construction differs from conventional scenario analysis in two important ways. First, the multiway graph is generated systematically from explicit transformation rules rather than being constructed ad hoc based on expert judgment about plausible futures (few examples are given Table \ref{rules}).
+
+\begin{table}[H]
+\centering
+\begin{tabular}{l l c c c}
+\hline
+Domain & Rule & $\Delta U$ & $\Delta E$ & $\Delta C$ \\
+\hline
+Infrastructure & Pipe rupture (edge deletion) & $\downarrow$ & $\downarrow$ & $\uparrow$ \\
+Infrastructure & Parallel capacity (edge creation) & $\uparrow$ & $\uparrow$ & $\downarrow$ \\
+Ecological & Extinction (node deletion) & $\downarrow$ & $\downarrow$ & $\uparrow$ \\
+Ecological & Mutualism (edge creation) & $\uparrow$ & $\uparrow$ & $\downarrow$ \\
+Social & Tie dissolution (edge deletion) & $\downarrow$ & $\downarrow$ & $\uparrow$ \\
+Social & Bridging (edge creation) & $\uparrow$ & $\uparrow$ & $\downarrow$ \\
+\hline
+\end{tabular}
+\caption{Examples of rule signatures for SETS processes across infrastructure, ecological, and social domains. Deletion rules generally reduce utility and increase constraints, while creation rules increase utility at the cost of effort while reducing constraints.}
+\label{rules}
+\end{table}
+
+This systematic generation ensures logical consistency—all represented futures are reachable through specified mechanisms—while also enabling exploration of unexpected combinations that human judgment might overlook. Second, the multiway graph explicitly represents the \emph{relationships} between scenarios, showing how different pathways branch from common ancestors or converge toward common descendants. This relational structure enables topological analysis of the possibility space.
 
 \subsection{Topological Metrics for Resilience and Fragility}
 
